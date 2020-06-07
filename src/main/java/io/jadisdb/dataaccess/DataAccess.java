@@ -1,4 +1,4 @@
-package io.jadisdb;
+package io.jadisdb.dataaccess;
 
 public interface DataAccess {
     String get(String key);

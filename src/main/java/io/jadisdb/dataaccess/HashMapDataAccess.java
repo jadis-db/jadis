@@ -1,4 +1,4 @@
-package io.jadisdb;
+package io.jadisdb.dataaccess;
 
 import java.util.HashMap;
 

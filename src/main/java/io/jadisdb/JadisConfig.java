@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JadiConfig {
+public class JadisConfig {
     private Integer port;
 
     @Override

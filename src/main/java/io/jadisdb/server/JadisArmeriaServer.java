@@ -1,6 +1,5 @@
 package io.jadisdb.server;
 
-import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
@@ -39,8 +38,7 @@ public class JadisArmeriaServer implements JadisServer {
             public HttpResponse post(@Param("key") String key, String body) {
                 log.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 log.debug(body);
-                dataAccess.put(key, body);
-                return HttpResponse.of(dataAccess.get(key) == null ? "null" : dataAccess.get(key));
+                return HttpResponse.of(dataAccess.put(key, body) == null ? "null" : dataAccess.get(key));
             }
         });
 
@@ -50,7 +48,7 @@ public class JadisArmeriaServer implements JadisServer {
                 return HttpResponse.of(dataAccess.remove(key) == null ? "null" : dataAccess.get(key));
             }
         });
-        
+
         Server server = sb.build();
         CompletableFuture<Void> future = server.start();
         future.join();

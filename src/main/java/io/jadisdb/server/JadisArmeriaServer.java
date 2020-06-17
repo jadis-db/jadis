@@ -11,10 +11,10 @@ import io.jadisdb.dataaccess.DataAccess;
 import java.util.concurrent.CompletableFuture;
 
 
-public class JadisNettyServer implements JadisServer {
+public class JadisArmeriaServer implements JadisServer {
     private DataAccess dataAccess;
 
-    public JadisNettyServer(DataAccess dataAccess) {
+    public JadisArmeriaServer(DataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 

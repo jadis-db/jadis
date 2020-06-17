@@ -38,14 +38,16 @@ public class JadisArmeriaServer implements JadisServer {
             public HttpResponse post(@Param("key") String key, String body) {
                 log.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 log.debug(body);
-                return HttpResponse.of(dataAccess.put(key, body) == null ? "null" : dataAccess.get(key));
+                String data = dataAccess.put(key, body);
+                return HttpResponse.of(data == null ? "null" : data);
             }
         });
 
         sb.annotatedService(new Object() {
             @Delete("/data/:key")
             public HttpResponse post(@Param("key") String key) {
-                return HttpResponse.of(dataAccess.remove(key) == null ? "null" : dataAccess.get(key));
+                String data = dataAccess.remove(key);
+                return HttpResponse.of(data == null ? "null" : data);
             }
         });
 

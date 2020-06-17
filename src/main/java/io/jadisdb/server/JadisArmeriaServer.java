@@ -4,6 +4,7 @@ import com.linecorp.armeria.common.HttpRequest;
 import com.linecorp.armeria.common.HttpResponse;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
+import com.linecorp.armeria.server.annotation.Delete;
 import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.Param;
 import com.linecorp.armeria.server.annotation.Post;
@@ -43,7 +44,13 @@ public class JadisArmeriaServer implements JadisServer {
             }
         });
 
-
+        sb.annotatedService(new Object() {
+            @Delete("/data/:key")
+            public HttpResponse post(@Param("key") String key) {
+                return HttpResponse.of(dataAccess.remove(key) == null ? "null" : dataAccess.get(key));
+            }
+        });
+        
         Server server = sb.build();
         CompletableFuture<Void> future = server.start();
         future.join();

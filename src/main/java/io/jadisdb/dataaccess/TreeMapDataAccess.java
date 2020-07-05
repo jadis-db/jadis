@@ -3,10 +3,7 @@ package io.jadisdb.dataaccess;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.jadisdb.exception.NotExistKeyException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TreeMapDataAccess implements RangeDataAccess {
     private TreeMap<String, JsonNode> treeMap = new TreeMap<>();
@@ -15,7 +12,7 @@ public class TreeMapDataAccess implements RangeDataAccess {
     public List<Data> range(String startKey, String endKey) {
         if (treeMap.containsKey(startKey) && treeMap.containsKey(endKey)) {
             List<Data> dataList = new ArrayList<>();
-            for (String key : treeMap.keySet()) {
+            for (String key : treeMap.navigableKeySet().subSet(startKey, endKey)) {
                 if (key.equals(endKey)) {
                     dataList.add(new Data(key, treeMap.get(key)));
                     break;
@@ -23,6 +20,7 @@ public class TreeMapDataAccess implements RangeDataAccess {
 
                 dataList.add(new Data(key, treeMap.get(key)));
             }
+            dataList.add(new Data(endKey, treeMap.get(endKey)));
 
             return dataList;
         }
@@ -33,9 +31,16 @@ public class TreeMapDataAccess implements RangeDataAccess {
     @Override
     public List<Data> range(String startKey, Long size) {
         if (treeMap.containsKey(startKey)) {
+            int count = 0;
             List<Data> dataList = new ArrayList<>();
-            for (String key : treeMap.keySet()) {
+
+            for (String key : treeMap.navigableKeySet().tailSet(startKey)) {
+                if(count >= size) {
+                    break;
+                }
+
                 dataList.add(new Data(key, treeMap.get(key)));
+                count += 1;
             }
 
             return dataList;

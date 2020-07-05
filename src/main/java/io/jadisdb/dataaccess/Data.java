@@ -1,5 +1,6 @@
 package io.jadisdb.dataaccess;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class Data {
     private String key;
 
-    private String value;
+    private JsonNode value;
 }

@@ -12,13 +12,9 @@ public class TreeMapDataAccess implements RangeDataAccess {
     public List<Data> range(String startKey, String endKey) {
         List<Data> dataList = new ArrayList<>();
         for (String key : treeMap.navigableKeySet().subSet(startKey, endKey)) {
-            if (key.equals(endKey)) {
-                dataList.add(new Data(key, treeMap.get(key)));
-                break;
-            }
-
             dataList.add(new Data(key, treeMap.get(key)));
         }
+        dataList.add(new Data(endKey, treeMap.get(endKey)));
 
         return dataList;
     }

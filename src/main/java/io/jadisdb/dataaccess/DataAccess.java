@@ -1,9 +1,11 @@
 package io.jadisdb.dataaccess;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 public interface DataAccess {
-    String get(String key);
+    JsonNode get(String key);
 
-    String put(String key, String value);
+    JsonNode put(String key, JsonNode value);
 
-    String remove(String key);
+    JsonNode remove(String key);
 }

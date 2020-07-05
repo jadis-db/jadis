@@ -10,7 +10,6 @@ public class TreeMapDataAccess implements RangeDataAccess {
 
     @Override
     public List<Data> range(String startKey, String endKey) {
-        if (treeMap.containsKey(startKey) && treeMap.containsKey(endKey)) {
             List<Data> dataList = new ArrayList<>();
             for (String key : treeMap.navigableKeySet().subSet(startKey, endKey)) {
                 if (key.equals(endKey)) {
@@ -20,17 +19,12 @@ public class TreeMapDataAccess implements RangeDataAccess {
 
                 dataList.add(new Data(key, treeMap.get(key)));
             }
-            dataList.add(new Data(endKey, treeMap.get(endKey)));
 
             return dataList;
-        }
-
-        throw new NotExistKeyException();
     }
 
     @Override
     public List<Data> range(String startKey, Long size) {
-        if (treeMap.containsKey(startKey)) {
             int count = 0;
             List<Data> dataList = new ArrayList<>();
 
@@ -44,9 +38,6 @@ public class TreeMapDataAccess implements RangeDataAccess {
             }
 
             return dataList;
-        }
-
-        throw new NotExistKeyException();
     }
 
     @Override

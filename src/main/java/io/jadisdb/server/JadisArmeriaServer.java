@@ -8,10 +8,7 @@ import com.linecorp.armeria.common.HttpStatus;
 import com.linecorp.armeria.common.MediaType;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
-import com.linecorp.armeria.server.annotation.Delete;
-import com.linecorp.armeria.server.annotation.Get;
-import com.linecorp.armeria.server.annotation.Param;
-import com.linecorp.armeria.server.annotation.Post;
+import com.linecorp.armeria.server.annotation.*;
 import io.jadisdb.JadisConfig;
 import io.jadisdb.dataaccess.Data;
 import io.jadisdb.dataaccess.RangeDataAccess;
@@ -64,7 +61,7 @@ public class JadisArmeriaServer implements JadisServer {
                 final List<Data> dataList = dataAccess.range(startKey, size);
                 return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(dataList));
             }
-        });
+        }, new NotExistKeyExceptionHandler());
 
         Server server = sb.build();
         CompletableFuture<Void> future = server.start();

@@ -10,34 +10,34 @@ public class TreeMapDataAccess implements RangeDataAccess {
 
     @Override
     public List<Data> range(String startKey, String endKey) {
-            List<Data> dataList = new ArrayList<>();
-            for (String key : treeMap.navigableKeySet().subSet(startKey, endKey)) {
-                if (key.equals(endKey)) {
-                    dataList.add(new Data(key, treeMap.get(key)));
-                    break;
-                }
-
+        List<Data> dataList = new ArrayList<>();
+        for (String key : treeMap.navigableKeySet().subSet(startKey, endKey)) {
+            if (key.equals(endKey)) {
                 dataList.add(new Data(key, treeMap.get(key)));
+                break;
             }
 
-            return dataList;
+            dataList.add(new Data(key, treeMap.get(key)));
+        }
+
+        return dataList;
     }
 
     @Override
     public List<Data> range(String startKey, Long size) {
-            int count = 0;
-            List<Data> dataList = new ArrayList<>();
+        int count = 0;
+        List<Data> dataList = new ArrayList<>();
 
-            for (String key : treeMap.navigableKeySet().tailSet(startKey)) {
-                if(count >= size) {
-                    break;
-                }
-
-                dataList.add(new Data(key, treeMap.get(key)));
-                count += 1;
+        for (String key : treeMap.navigableKeySet().tailSet(startKey)) {
+            if (count >= size) {
+                break;
             }
 
-            return dataList;
+            dataList.add(new Data(key, treeMap.get(key)));
+            count += 1;
+        }
+
+        return dataList;
     }
 
     @Override

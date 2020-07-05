@@ -1,6 +1,11 @@
 package io.jadisdb.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.armeria.common.HttpResponse;
+import com.linecorp.armeria.common.HttpStatus;
+import com.linecorp.armeria.common.MediaType;
 import com.linecorp.armeria.server.Server;
 import com.linecorp.armeria.server.ServerBuilder;
 import com.linecorp.armeria.server.annotation.Delete;
@@ -15,6 +20,8 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class JadisArmeriaServer implements JadisServer {
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private DataAccess dataAccess;
 
     public JadisArmeriaServer(DataAccess dataAccess) {
@@ -25,29 +32,23 @@ public class JadisArmeriaServer implements JadisServer {
     public void runServer(JadisConfig jadisConfig) {
         ServerBuilder sb = Server.builder();
         sb.http(jadisConfig.getPort());
-
         sb.annotatedService(new Object() {
             @Get("/data/:key")
-            public HttpResponse get(@Param("key") String key) {
-                return HttpResponse.of(dataAccess.get(key) == null ? "null" : dataAccess.get(key));
+            public HttpResponse get(@Param("key") String key) throws JsonProcessingException {
+                final JsonNode content = dataAccess.get(key);
+                return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(content));
             }
-        });
 
-        sb.annotatedService(new Object() {
             @Post("/data/:key")
-            public HttpResponse post(@Param("key") String key, String body) {
-                log.debug("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                log.debug(body);
-                String data = dataAccess.put(key, body);
-                return HttpResponse.of(data == null ? "null" : data);
+            public HttpResponse post(@Param("key") String key, JsonNode body) throws JsonProcessingException {
+                final JsonNode content = dataAccess.put(key, body);
+                return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(content));
             }
-        });
 
-        sb.annotatedService(new Object() {
             @Delete("/data/:key")
-            public HttpResponse post(@Param("key") String key) {
-                String data = dataAccess.remove(key);
-                return HttpResponse.of(data == null ? "null" : data);
+            public HttpResponse delete(@Param("key") String key) throws JsonProcessingException {
+                final JsonNode content = dataAccess.remove(key);
+                return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(content));
             }
         });
 

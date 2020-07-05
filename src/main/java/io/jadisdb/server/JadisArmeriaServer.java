@@ -13,18 +13,20 @@ import com.linecorp.armeria.server.annotation.Get;
 import com.linecorp.armeria.server.annotation.Param;
 import com.linecorp.armeria.server.annotation.Post;
 import io.jadisdb.JadisConfig;
-import io.jadisdb.dataaccess.DataAccess;
+import io.jadisdb.dataaccess.Data;
+import io.jadisdb.dataaccess.RangeDataAccess;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class JadisArmeriaServer implements JadisServer {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private DataAccess dataAccess;
+    private RangeDataAccess dataAccess;
 
-    public JadisArmeriaServer(DataAccess dataAccess) {
+    public JadisArmeriaServer(RangeDataAccess dataAccess) {
         this.dataAccess = dataAccess;
     }
 
@@ -49,6 +51,18 @@ public class JadisArmeriaServer implements JadisServer {
             public HttpResponse delete(@Param("key") String key) throws JsonProcessingException {
                 final JsonNode content = dataAccess.remove(key);
                 return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(content));
+            }
+
+            @Get("/data/startKey/{startKey}/endKey/{endKey}")
+            public HttpResponse rangeKey(@Param("startKey") String startKey, @Param("endKey") String endKey) throws JsonProcessingException {
+                final List<Data> dataList = dataAccess.range(startKey, endKey);
+                return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(dataList));
+            }
+
+            @Get("/data/startKey/{startKey}/size/{size}")
+            public HttpResponse rangeLimit(@Param("startKey") String startKey, @Param("size") Long size) throws JsonProcessingException {
+                final List<Data> dataList = dataAccess.range(startKey, size);
+                return HttpResponse.of(HttpStatus.OK, MediaType.JSON, OBJECT_MAPPER.writeValueAsString(dataList));
             }
         });
 
